@@ -1,5 +1,5 @@
 import Head from "next/head";
-
+import Navbar from "./navbar";
 const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -7,14 +7,19 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
     <div className="root">
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=Overpass:wght@200;400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
           rel="stylesheet"
-        />
+        ></link>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        ></link>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1"
         />
       </Head>
+      <Navbar />
       <main className="main-flex-container">{children}</main>
 
       <style jsx>{`
@@ -41,9 +46,9 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           min-height: 100%;
           padding: 0;
           margin: 0;
-          font-family: Overpass, -apple-system, BlinkMacSystemFont, Segoe UI,
-            Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-            Helvetica Neue, sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+            sans-serif;
           font-weight: 700;
           font-size: 0.95rem;
         }

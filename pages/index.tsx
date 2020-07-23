@@ -4,57 +4,30 @@ import Layout from "../components/layout";
 const Home: React.FunctionComponent = () => {
   return (
     <Layout>
-      <div className="container">
-        <Head>
-          <title>Create Next App</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+      <Head>
+        <title>Create Next App</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <main>
-          <h3>Aniplayer</h3>
-        </main>
+      <style jsx>{`
+        h3 {
+          margin: 0;
+          line-height: 1.15;
+          font-size: 4rem;
+        }
+      `}</style>
 
-        <style jsx>{`
-          .container {
-            min-height: 100vh;
-            padding: 0 0.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          }
+      <style jsx global>{`
+        html,
+        body {
+          padding: 0;
+          margin: 0;
+        }
 
-          main {
-            padding: 5rem 0;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-          }
-
-          h3 {
-            margin: 0;
-            line-height: 1.15;
-            font-size: 4rem;
-          }
-        `}</style>
-
-        <style jsx global>{`
-          html,
-          body {
-            padding: 0;
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-              Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-              sans-serif;
-          }
-
-          * {
-            box-sizing: border-box;
-          }
-        `}</style>
-      </div>
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
     </Layout>
   );
 };
