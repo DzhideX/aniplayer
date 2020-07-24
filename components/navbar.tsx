@@ -1,13 +1,10 @@
 import useWindowDimensions from "../lib/useWindowDimensions";
 
 const Navbar: React.FC = () => {
-  const { height, width } = useWindowDimensions();
-
   return (
     <div className="navbar">
       <div className="navbar__left">
         <h2 className="navbar__left__logo">ANIFLIX</h2>
-        {console.log(height)}
         <h4>Home</h4>
         <h4>TV Shows</h4>
         <h4>Movies</h4>
@@ -42,6 +39,8 @@ const Navbar: React.FC = () => {
           align-items: center;
           padding: 0 5rem 0 1.5rem;
           background-color: black;
+          position: absolute;
+          top: 0;
         }
 
         .navbar h4 {

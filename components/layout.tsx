@@ -1,5 +1,6 @@
 import Head from "next/head";
-import Navbar from "./navbar";
+import Navbar from "./Navbar";
+
 const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -35,6 +36,7 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           flex: 1;
           flex-direction: column;
           background-color: "#e1e5e9";
+          margin-top: 5rem;
         }
       `}</style>
 
