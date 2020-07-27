@@ -35,8 +35,8 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           display: flex;
           flex: 1;
           flex-direction: column;
-          background-color: "#e1e5e9";
-          margin-top: 5rem;
+          background-color: rgb(19, 19, 19);
+          margin-top: 3.75rem;
         }
       `}</style>
 

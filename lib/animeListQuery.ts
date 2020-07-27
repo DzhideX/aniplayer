@@ -1,7 +1,7 @@
-const animeListQuery = async () => {
+const animeListQuery = async (): Promise<object> => {
   const query = `
     {
-      topScore: Page(page: 1, perPage: 20) {
+      topScore: Page(page: 1, perPage: 30) {
         media(type: ANIME, sort: SCORE_DESC) {
           id
           coverImage {
@@ -10,6 +10,32 @@ const animeListQuery = async () => {
             medium
             color
           }
+          bannerImage
+          title {
+            english
+            romaji
+            native
+          }
+          genres
+          meanScore
+          popularity
+          format
+          episodes
+          season
+          seasonYear
+          status
+        }
+      }
+      mostPopular: Page(page: 1, perPage: 30) {
+        media(type: ANIME, sort: POPULARITY_DESC) {
+          id
+          coverImage {
+            extraLarge
+            large
+            medium
+            color
+          }
+          bannerImage
           title {
             english
             romaji
