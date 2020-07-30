@@ -37,6 +37,7 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           flex-direction: column;
           background-color: rgb(19, 19, 19);
           margin-top: 3.75rem;
+          padding-bottom: 2rem;
         }
       `}</style>
 
@@ -45,7 +46,6 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
         body,
         #__next {
           height: 100%;
-          min-height: 100%;
           padding: 0;
           margin: 0;
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
@@ -53,6 +53,10 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
             sans-serif;
           font-weight: 700;
           font-size: 0.95rem;
+        }
+
+        body::-webkit-scrollbar {
+          display: none;
         }
 
         * {

@@ -1,12 +1,13 @@
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const PictureCarousel: React.FC<{
   animeData: Array<object>;
   number: number;
 }> = ({ animeData, number }) => {
   const carousel = useRef();
+  const [pictureCount, setPictureCount] = useState<number>(0);
 
-  const scroll = (direction) => {
+  const scroll = async (direction) => {
     document
       .getElementsByClassName("picture-carousel__items")
       [number].scrollBy({
@@ -14,6 +15,11 @@ const PictureCarousel: React.FC<{
         behavior: "smooth",
       });
   };
+  useEffect(() => {
+    if (pictureCount) {
+      console.log(pictureCount);
+    }
+  }, [pictureCount]);
 
   return (
     <div className="picture-carousel">
@@ -24,13 +30,14 @@ const PictureCarousel: React.FC<{
         >
           <img src="images/carousel/left-arrow.png" />
         </div>
-        {animeData.map((anime: any, i) => (
-          <div
-            className="picture-carousel__items__item"
-            key={anime.id}
-            style={{ backgroundImage: `url(${anime.coverImage.extraLarge})` }}
-          ></div>
-        ))}
+        {animeData &&
+          animeData.map((anime: any, i) => (
+            <div
+              className="picture-carousel__items__item"
+              key={anime.id}
+              style={{ backgroundImage: `url(${anime.coverImage.extraLarge})` }}
+            ></div>
+          ))}
         <div
           onClick={() => scroll("right")}
           className="picture-carousel__items__scroll-right"
@@ -121,4 +128,4 @@ export default PictureCarousel;
 //     count++;
 // }, 1000);
 
-// const itemsToShow = Array.from({ length: itemsPerPage }, (_, index) => items[(index + count) % items.length]);
+// const itemsToShow = ;

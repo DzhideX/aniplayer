@@ -1,5 +1,3 @@
-import useWindowDimensions from "../lib/useWindowDimensions";
-
 const Navbar: React.FC = () => {
   return (
     <div className="navbar">
@@ -39,8 +37,9 @@ const Navbar: React.FC = () => {
           align-items: center;
           padding: 0 5rem 0 1.5rem;
           background-color: black;
-          position: absolute;
+          position: fixed;
           top: 0;
+          z-index: 1;
         }
 
         .navbar h4 {
