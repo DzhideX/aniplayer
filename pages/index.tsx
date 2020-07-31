@@ -17,12 +17,32 @@ export const getServerSideProps = async (context) => {
   };
 };
 
+type Anime = {
+  id?: string;
+  bannerImage?: string;
+  coverImage?: object;
+  title?: {
+    english?: string;
+    romaji?: string;
+    native?: string;
+  };
+  genres?: string[];
+  meanScore?: number;
+  popularity?: number;
+  format?: string;
+  episodes?: number;
+  season?: string;
+  seasonYear?: number;
+  status?: string;
+  description?: string;
+};
+
 const Home: React.FunctionComponent<{
-  topScore: Array<object>;
-  mostPopular: Array<object>;
-  mostPopularThisSeason: Array<object>;
-  mostPopularNextSeason: Array<object>;
-  trendingNow: Array<object>;
+  topScore: Array<Anime>;
+  mostPopular: Array<Anime>;
+  mostPopularThisSeason: Array<Anime>;
+  mostPopularNextSeason: Array<Anime>;
+  trendingNow: Array<Anime>;
 }> = ({
   topScore,
   mostPopular,
