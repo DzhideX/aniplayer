@@ -2,6 +2,7 @@ import Head from "next/head";
 import Layout from "../components/Layout";
 import animeListQuery from "../lib/animeListQuery";
 import PictureCarousel from "../components/PictureCarousel";
+import Banner from "../components/Banner";
 
 export const getServerSideProps = async (context) => {
   const animeData: any = await animeListQuery();
@@ -35,6 +36,11 @@ const Home: React.FunctionComponent<{
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Banner
+        title={topScore[0].title.romaji}
+        image={topScore[0].bannerImage}
+        description={topScore[0].description}
+      />
       <h2> Top 20 </h2>
       <PictureCarousel animeData={topScore} number={0} />
       <h2> All-time popular</h2>
@@ -53,9 +59,13 @@ const Home: React.FunctionComponent<{
         }
 
         h2 {
-          margin: 1rem 0 1rem 2rem;
+          margin: 1rem 0 1rem 4rem;
           color: #e5e5e5;
           cursor: pointer;
+        }
+        h2:nth-of-type(1) {
+          margin-top: -8rem;
+          z-index: 1;
         }
 
         h2:hover {

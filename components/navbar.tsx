@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
           justify-content: space-between;
           align-items: center;
           padding: 0 5rem 0 1.5rem;
-          background-color: black;
+          background-color: rgba(0, 0, 0, 1);
           position: fixed;
           top: 0;
           z-index: 1;

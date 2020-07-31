@@ -36,7 +36,6 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           flex: 1;
           flex-direction: column;
           background-color: rgb(19, 19, 19);
-          margin-top: 3.75rem;
           padding-bottom: 2rem;
         }
       `}</style>

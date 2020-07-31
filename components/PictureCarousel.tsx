@@ -47,11 +47,13 @@ const PictureCarousel: React.FC<{
       </div>
       <style jsx>{`
         .picture-carousel {
-          height: 10rem;
+          height: 11rem;
           width: 100%;
           display: flex;
           overflow-x: scroll;
           position: relative;
+          margin-bottom: 3rem;
+          padding: 0 4rem;
         }
 
         .picture-carousel__items {
@@ -104,7 +106,7 @@ const PictureCarousel: React.FC<{
         }
 
         .picture-carousel__items__scroll-right {
-          right: 0;
+          right: 4rem;
         }
 
         .picture-carousel__items__scroll-right img,

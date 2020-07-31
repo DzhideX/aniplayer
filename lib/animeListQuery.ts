@@ -29,7 +29,8 @@ const animeListQuery = async (): Promise<object> => {
   }
   
   fragment animeDataFields on Media{
-    id
+        id
+        bannerImage
         coverImage {
           extraLarge
           large
@@ -49,6 +50,7 @@ const animeListQuery = async (): Promise<object> => {
         season
         seasonYear
         status
+        description
   }
       `;
 
