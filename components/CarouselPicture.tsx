@@ -1,14 +1,17 @@
 import { useState } from "react";
 
 const CarouselPicture: React.FC<{
-  backgroundImage: "string";
-}> = ({ backgroundImage }) => {
+  backgroundImage: string;
+  css: boolean;
+}> = ({ backgroundImage, css }) => {
   const [moreInfoView, setMoreInfoView] = useState<boolean>(false);
 
   return (
     <div
       className={`carousel-picture${moreInfoView ? " active" : ""}`}
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+      }}
       onMouseEnter={() => setMoreInfoView(true)}
       onMouseLeave={() => setMoreInfoView(false)}
     >
@@ -26,22 +29,21 @@ const CarouselPicture: React.FC<{
         }
 
         .active {
-          min-width: 25rem;
-          min-height: 15rem;
-          max-height: 15rem;
-          background-size: 25rem;
-          animation: in-data 1s;
+          transform: scale(1.25);
+          min-width: 21.5rem;
+          max-width: 21.5rem;
+          animation: in-data 0.5s;
         }
 
         @keyframes in-data {
           0% {
-            transform: scale(0.8);
+            transform: scale(1);
           }
           60% {
             opacity: 1;
           }
           100% {
-            transform: scale(1);
+            transform: scale(1.25);
           }
         }
       `}</style>

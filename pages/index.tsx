@@ -79,9 +79,10 @@ const Home: React.FunctionComponent<{
         }
 
         h2 {
-          margin: 1rem 0 1rem 4rem;
+          margin: 1rem 0 0rem 4rem;
           color: #e5e5e5;
           cursor: pointer;
+          width: 16rem;
         }
         h2:nth-of-type(1) {
           margin-top: -8rem;

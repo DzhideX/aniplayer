@@ -7,7 +7,7 @@ const PictureCarousel: React.FC<{
 }> = ({ animeData, number }) => {
   const carousel = useRef();
   const [pictureCount, setPictureCount] = useState<number>(0);
-  const [moreInfoViewVisible, setMoreInfoViewVisible] = useState(false);
+  const [css, setCss] = useState<boolean>(false);
 
   const scroll = async (direction) => {
     document
@@ -20,7 +20,12 @@ const PictureCarousel: React.FC<{
 
   return (
     <div className="picture-carousel">
-      <div ref={carousel} className="picture-carousel__items">
+      <div
+        ref={carousel}
+        className="picture-carousel__items"
+        onMouseEnter={() => setCss(true)}
+        onMouseLeave={() => setCss(false)}
+      >
         <div
           onClick={() => scroll("left")}
           className="picture-carousel__items__scroll-left"
@@ -32,6 +37,7 @@ const PictureCarousel: React.FC<{
             <CarouselPicture
               key={anime.id}
               backgroundImage={anime.coverImage.extraLarge}
+              css={css}
             />
           ))}
         <div
