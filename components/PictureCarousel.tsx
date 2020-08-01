@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import CarouselPicture from "./CarouselPicture";
 
 const PictureCarousel: React.FC<{
   animeData: Array<object>;
@@ -6,6 +7,7 @@ const PictureCarousel: React.FC<{
 }> = ({ animeData, number }) => {
   const carousel = useRef();
   const [pictureCount, setPictureCount] = useState<number>(0);
+  const [moreInfoViewVisible, setMoreInfoViewVisible] = useState(false);
 
   const scroll = async (direction) => {
     document
@@ -15,11 +17,6 @@ const PictureCarousel: React.FC<{
         behavior: "smooth",
       });
   };
-  useEffect(() => {
-    if (pictureCount) {
-      console.log(pictureCount);
-    }
-  }, [pictureCount]);
 
   return (
     <div className="picture-carousel">
@@ -32,11 +29,10 @@ const PictureCarousel: React.FC<{
         </div>
         {animeData &&
           animeData.map((anime: any, i) => (
-            <div
-              className="picture-carousel__items__item"
+            <CarouselPicture
               key={anime.id}
-              style={{ backgroundImage: `url(${anime.coverImage.extraLarge})` }}
-            ></div>
+              backgroundImage={anime.coverImage.extraLarge}
+            />
           ))}
         <div
           onClick={() => scroll("right")}
@@ -47,12 +43,12 @@ const PictureCarousel: React.FC<{
       </div>
       <style jsx>{`
         .picture-carousel {
-          height: 11rem;
+          height: 15rem;
           width: 100%;
           display: flex;
           overflow-x: scroll;
           position: relative;
-          margin-bottom: 3rem;
+          margin-bottom: 0rem;
           padding: 0 4rem;
         }
 
@@ -60,6 +56,7 @@ const PictureCarousel: React.FC<{
           height: 100%;
           width: 100%;
           display: flex;
+          align-items: center;
           overflow-x: scroll;
           -webkit-overflow-scrolling: touch;
         }
@@ -72,27 +69,17 @@ const PictureCarousel: React.FC<{
           display: none;
         }
 
-        .picture-carousel__items__item {
-          min-height: 8rem;
-          min-width: 18rem;
-          background-repeat: no-repeat;
-          background-size: auto;
-          background-size: 18rem;
-          margin-right: 0.5rem;
-          background-position: center;
-          scroll-snap-align: start;
-        }
-
         .picture-carousel__items__scroll-right,
         .picture-carousel__items__scroll-left {
           width: 3rem;
-          height: 100%;
+          height: 12rem;
           background-color: rgba(0, 0, 0, 0.5);
           display: flex;
           justify-content: center;
           align-items: center;
           position: absolute;
           cursor: pointer;
+          z-index: 5;
         }
 
         .picture-carousel__items__scroll-right:hover,

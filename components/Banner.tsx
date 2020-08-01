@@ -16,7 +16,16 @@ const Banner: React.FC<{
         <h2>{title}</h2>
         <p>{shortenText(description.split("<br>")[2], 250)}</p>
       </div>
-      <div className="banner__actions"></div>
+      <div className="banner__actions">
+        <div className="banner__actions__play">
+          <img src="/images/banner/play-button.png" />
+          <h2>Play</h2>
+        </div>
+        <div className="banner__actions__info">
+          <img src="/images/banner/info.png" />
+          <h2>More info</h2>
+        </div>
+      </div>
       <div className="banner__fade"></div>
       <style jsx>{`
         .banner {
@@ -32,7 +41,7 @@ const Banner: React.FC<{
         }
 
         .banner__data {
-          height: 50%;
+          height: 40%;
           width: 100%;
           padding-left: 4rem;
         }
@@ -48,6 +57,58 @@ const Banner: React.FC<{
           color: white;
           text-shadow: 0rem 0rem 0.3rem black;
           font-size: 1.2rem;
+        }
+
+        .banner__actions {
+          height: 3.75rem;
+          width: 100%;
+          display: flex;
+          padding-left: 4rem;
+        }
+
+        .banner__actions__play {
+          height: 100%;
+          width: 11rem;
+          background-color: white;
+          display: flex;
+          align-items: center;
+          justify-content center;
+          border-radius:0.3rem;
+          cursor:pointer;
+        }
+
+        .banner__actions__play:hover {
+          background-color:rgba(255,255,255,0.8);
+        }
+
+        .banner__actions__play img{
+          height:1.5rem;
+          margin-right:1rem;
+        }
+
+        .banner__actions__info{
+          background-color:rgb(109,109,110);
+          height:100%;
+          width:13rem;
+          margin-left:1rem;
+          border-radius:0.3rem;
+          cursor:pointer;
+          display: flex;
+          align-items: center;
+          justify-content center;
+        }
+
+        .banner__actions__info:hover {
+          background-color: rgba(109,109,110,0.7);
+        }
+
+        .banner__actions__info img{
+          height:1.6rem;
+          margin-right:1rem;
+        }
+
+        .banner__actions__info h2{
+          color:white;
         }
 
         .banner__fade {
