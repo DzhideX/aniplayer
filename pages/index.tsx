@@ -17,10 +17,13 @@ export const getServerSideProps = async (context) => {
   };
 };
 
-type Anime = {
+export type Anime = {
   id?: string;
   bannerImage?: string;
-  coverImage?: object;
+  coverImage?: {
+    extraLarge?: string;
+    medium?: string;
+  };
   title?: {
     english?: string;
     romaji?: string;
@@ -57,9 +60,9 @@ const Home: React.FunctionComponent<{
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Banner
-        title={topScore[0].title.romaji}
-        image={topScore[0].bannerImage}
-        description={topScore[0].description}
+        title={topScore[1].title.romaji}
+        image={topScore[1].bannerImage}
+        description={topScore[1].description}
       />
       <h2> Top 20 </h2>
       <PictureCarousel animeData={topScore} number={0} />
@@ -71,6 +74,16 @@ const Home: React.FunctionComponent<{
       <PictureCarousel animeData={mostPopularNextSeason} number={3} />
       <h2>Trending</h2>
       <PictureCarousel animeData={trendingNow} number={4} />
+      <video
+        src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+        style={{ height: "200px", width: "500px", marginLeft: "3rem" }}
+        controls
+      >
+        <source
+          src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+          type="video/mp4"
+        ></source>
+      </video>
       <style jsx>{`
         h3 {
           margin: 0;

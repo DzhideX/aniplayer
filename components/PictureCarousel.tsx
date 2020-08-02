@@ -1,13 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import CarouselPicture from "./CarouselPicture";
+import { Anime } from "../pages/index";
 
 const PictureCarousel: React.FC<{
   animeData: Array<object>;
   number: number;
 }> = ({ animeData, number }) => {
   const carousel = useRef();
-  const [pictureCount, setPictureCount] = useState<number>(0);
-  const [css, setCss] = useState<boolean>(false);
 
   const scroll = async (direction) => {
     document
@@ -20,12 +19,7 @@ const PictureCarousel: React.FC<{
 
   return (
     <div className="picture-carousel">
-      <div
-        ref={carousel}
-        className="picture-carousel__items"
-        onMouseEnter={() => setCss(true)}
-        onMouseLeave={() => setCss(false)}
-      >
+      <div ref={carousel} className="picture-carousel__items">
         <div
           onClick={() => scroll("left")}
           className="picture-carousel__items__scroll-left"
@@ -33,11 +27,11 @@ const PictureCarousel: React.FC<{
           <img src="images/carousel/left-arrow.png" />
         </div>
         {animeData &&
-          animeData.map((anime: any, i) => (
+          animeData.map((anime: Anime, i) => (
             <CarouselPicture
               key={anime.id}
               backgroundImage={anime.coverImage.extraLarge}
-              css={css}
+              title={anime.title.romaji}
             />
           ))}
         <div
