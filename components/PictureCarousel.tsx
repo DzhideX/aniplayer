@@ -32,6 +32,9 @@ const PictureCarousel: React.FC<{
               key={anime.id}
               backgroundImage={anime.coverImage.extraLarge}
               title={anime.title.romaji}
+              englishTitle={
+                anime.title.english ? anime.title.english : anime.title.romaji
+              }
             />
           ))}
         <div

@@ -1,12 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import shortenText from "../lib/shortenText";
+import { useQuery } from "react-query";
 
 const CarouselPicture: React.FC<{
   backgroundImage: string;
   title: string;
-}> = ({ backgroundImage, title }) => {
+  englishTitle: string;
+}> = ({ backgroundImage, title, englishTitle }) => {
   const [moreInfoView, setMoreInfoView] = useState<boolean>(false);
   const [pictureLoadedOnce, setPictureLoadedOnce] = useState<boolean>(false);
+  const [animeData, setAnimeData] = useState<
+    string | undefined | null | string[]
+  >();
+
+  const getAnimeData = async () => {
+    const newData = await fetch(`http://localhost:4000/anime/${englishTitle}`)
+      .then((res) => res.json())
+      .catch((err) => console.log(err));
+    console.log(newData);
+    // setAnimeData(newData);
+  };
+
+  useEffect(() => {
+    if (pictureLoadedOnce) {
+      getAnimeData();
+    }
+  }, [pictureLoadedOnce]);
 
   return (
     <div
@@ -22,6 +41,7 @@ const CarouselPicture: React.FC<{
       }}
       onMouseLeave={() => setMoreInfoView(false)}
     >
+      {animeData && console.log(animeData)}
       {moreInfoView && (
         <>
           <div className="carousel-picture__left">
