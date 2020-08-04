@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Navbar from "./Navbar";
 
-const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const Layout: React.FunctionComponent<{
+  children: React.ReactNode;
+  navbar: boolean;
+}> = ({ children, navbar }) => {
   return (
     <div className="root">
       <Head>
@@ -20,7 +21,7 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           content="width=device-width, initial-scale=1, minimum-scale=1"
         />
       </Head>
-      <Navbar />
+      {navbar && <Navbar />}
       <main className="main-flex-container">{children}</main>
 
       <style jsx>{`
@@ -36,7 +37,6 @@ const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({
           flex: 1;
           flex-direction: column;
           background-color: rgb(19, 19, 19);
-          padding-bottom: 2rem;
         }
       `}</style>
 

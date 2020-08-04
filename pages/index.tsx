@@ -54,7 +54,7 @@ const Home: React.FunctionComponent<{
   trendingNow,
 }) => {
   return (
-    <Layout>
+    <Layout navbar={true}>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
@@ -74,16 +74,7 @@ const Home: React.FunctionComponent<{
       <PictureCarousel animeData={mostPopularNextSeason} number={3} />
       <h2>Trending</h2>
       <PictureCarousel animeData={trendingNow} number={4} />
-      <video
-        src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
-        style={{ height: "200px", width: "500px", marginLeft: "3rem" }}
-        controls
-      >
-        <source
-          src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
-          type="video/mp4"
-        ></source>
-      </video>
+
       <style jsx>{`
         h3 {
           margin: 0;
