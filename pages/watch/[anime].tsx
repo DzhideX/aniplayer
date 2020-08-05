@@ -4,10 +4,13 @@ import { useRef, useEffect, useState } from "react";
 const Watch: React.FC = () => {
   const videoRef: any = useRef();
   const progressRef: any = useRef();
+  const watchRef: any = useRef();
   const [videoTimer, setVideoTimer] = useState<number | undefined>(0);
   const [playButton, setPlayButton] = useState<boolean>(true);
+  const [mouseMoveOnVideo, setMouseMoveOnVideo] = useState<boolean>(false);
+  const [mouseOnPlayer, setMouseOnPlayer] = useState<boolean>(false);
 
-  const updateProgressBar = (e) => {
+  const updateVideoTime = (e) => {
     const progressBarPercentage =
       (e.pageX -
         (progressRef.current.offsetLeft * progressRef.current.max) /
@@ -18,19 +21,33 @@ const Watch: React.FC = () => {
     if (videoRef.current.currentTime <= 5) {
       videoRef.current.currentTime = 0;
     }
-
-    // videoRef.current.currentTime =
-    //   (e.pageX / window.innerWidth) * videoRef.current.duration;
-    // videoRef.current.currentTime =
-    //   (progressBarProgress / progressBarLength) * videoRef.current.duration;
     setVideoTimer(videoRef.current.currentTime);
   };
 
-  useEffect(() => {}, []);
+  const updateProgressBar = (e) => {
+    const percentageOfVideoFinished =
+      videoRef.current.currentTime / videoRef.current.duration;
+    progressRef.current.value = percentageOfVideoFinished;
+  };
+
+  const setMouseMove = (e) => {
+    e.preventDefault();
+    setMouseMoveOnVideo(true);
+
+    let timeout;
+    (() => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setMouseMoveOnVideo(false), 4000);
+    })();
+  };
 
   return (
     <Layout navbar={false}>
-      <div className="watch">
+      <div
+        ref={watchRef}
+        className="watch"
+        onMouseMove={(e) => setMouseMove(e)}
+      >
         <video
           ref={videoRef}
           className="watch__video"
@@ -41,15 +58,26 @@ const Watch: React.FC = () => {
             type="video/mp4"
           ></source>
         </video>
-        <div className="watch__player">
+        <div
+          className="watch__player"
+          style={{
+            visibility: mouseOnPlayer
+              ? "visible"
+              : mouseMoveOnVideo
+              ? "visible"
+              : "hidden",
+          }}
+          onMouseEnter={() => setMouseOnPlayer(true)}
+          onMouseLeave={() => setMouseOnPlayer(false)}
+        >
           <div className="watch__player__progress">
             <progress
               ref={progressRef}
-              className="watch__player_progress__bar"
+              className="watch__player__progress__bar"
               value={
                 videoRef.current ? videoTimer / videoRef.current.duration : 0
               }
-              onClick={updateProgressBar}
+              onClick={updateVideoTime}
             />
             <p>
               {`${Math.floor(
@@ -59,27 +87,82 @@ const Watch: React.FC = () => {
               )}:`}
             </p>
           </div>
-          <div className="watch__player_actions">
-            {playButton ? (
-              <button
-                onClick={() => {
-                  videoRef.current.play();
-                  setPlayButton(false);
+          <div className="watch__player__actions">
+            <div className="watch__player__actions__left">
+              {playButton ? (
+                <button
+                  onClick={() => {
+                    videoRef.current.play();
+                    setPlayButton(false);
+                  }}
+                  className="watch__player__actions__left__play-button"
+                >
+                  <img src="/images/watch/play-button.png" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    videoRef.current.pause();
+                    setPlayButton(true);
+                  }}
+                  className="watch__player__actions__left__play-button"
+                >
+                  <img src="/images/watch/pause.png" />
+                </button>
+              )}
+              <img
+                onClick={(e) => {
+                  videoRef.current.currentTime -= 10;
+                  updateProgressBar(e);
                 }}
-                className="watch__player_play-button"
-              >
-                <img src="/images/banner/play-button.png" />
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  videoRef.current.pause();
-                  setPlayButton(true);
+                src="/images/watch/rewind.png"
+              />
+              <img
+                onClick={(e) => {
+                  videoRef.current.currentTime += 10;
+                  updateProgressBar(e);
                 }}
-              >
-                pause
-              </button>
-            )}
+                src="/images/watch/skip.png"
+              />
+            </div>
+            <div className="watch__player__actions__right">
+              <img
+                onClick={() => {
+                  if (document.fullscreenElement) {
+                    if (
+                      document.fullscreenElement ||
+                      document.webkitFullscreenElement ||
+                      document.mozFullScreenElement
+                    ) {
+                      document.exitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                      /* Firefox */
+                      document.mozCancelFullScreen();
+                    } else if (document.webkitExitFullscreen) {
+                      /* Chrome, Safari and Opera */
+                      document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                      /* IE/Edge */
+                      document.msExitFullscreen();
+                    }
+                  } else {
+                    if (watchRef.current.requestFullscreen) {
+                      watchRef.current.requestFullscreen();
+                    } else if (watchRef.current.mozRequestFullScreen) {
+                      /* Firefox */
+                      watchRef.current.mozRequestFullScreen();
+                    } else if (watchRef.current.webkitRequestFullscreen) {
+                      /* Chrome, Safari & Opera */
+                      watchRef.current.webkitRequestFullscreen();
+                    } else if (watchRef.current.msRequestFullscreen) {
+                      /* IE/Edge */
+                      watchRef.current.msRequestFullscreen();
+                    }
+                  }
+                }}
+                src="/images/watch/expand.png"
+              />
+            </div>
           </div>
         </div>
         <style jsx>{`
@@ -99,13 +182,17 @@ const Watch: React.FC = () => {
             position: absolute;
           }
 
+          video::-webkit-media-controls-enclosure {
+            display: none !important;
+          }
+
           .watch__player {
             height: 10%;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 2;
+            z-index: 2147483647;
           }
 
           .watch__player__progress {
@@ -117,10 +204,20 @@ const Watch: React.FC = () => {
             position: relative;
           }
 
-          .watch__player_progress__bar {
+          .watch__player__progress__bar {
             width: 90%;
-            height: 0.5rem;
+            height: 0.3rem;
             border: none;
+            cursor: pointer;
+          }
+
+          .watch__player__progress__bar::-webkit-progress-bar {
+            background: rgb(0, 0, 0, 0.8);
+            box-shadow: 0 0 0.1rem rgb(255, 255, 255, 0.5);
+          }
+
+          .watch__player__progress__bar::-webkit-progress-value {
+            background-color: red;
           }
 
           .watch__player__progress p {
@@ -131,18 +228,88 @@ const Watch: React.FC = () => {
             margin: 0;
           }
 
-          .watch__player_play-button {
-            width: 5rem;
-            height: 2rem;
-            z-index: 2;
-          }
-
-          .watch__player_actions {
+          .watch__player__actions {
             width: 90%;
             height: 60%;
             display: flex;
             align-items: center;
-            background-color: red;
+            justify-content: space-between;
+          }
+
+          .watch__player__actions__left {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0.6rem;
+          }
+
+          .watch__player__actions__left > img {
+            height: 2rem;
+            width: 2rem;
+            margin-left: 2rem;
+            cursor: pointer;
+            margin-bottom: 0.2rem;
+          }
+
+          .watch__player__actions__left img:hover {
+            animation: in-data 0.3s;
+          }
+
+          .watch__player__actions__left__play-button {
+            width: 2rem;
+            height: 2rem;
+            border: none;
+            background: none;
+            margin-left: -0.35rem;
+            cursor: pointer;
+          }
+
+          .watch__player__actions__left__play-button:focus {
+            outline: none;
+          }
+
+          .watch__player__actions__left__play-button:hover img {
+            animation: in-data 0.3s;
+          }
+
+          .watch__player__actions__left__play-button img {
+            height: 1.5rem;
+            width: 1.5rem;
+          }
+
+          .watch__player__actions__fullscreen {
+            justify-self: flex-end;
+          }
+
+          .watch__player__actions__right {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0.6rem;
+          }
+
+          .watch__player__actions__right > img {
+            height: 1.7rem;
+            width: 2.1rem;
+            margin-left: 2rem;
+            cursor: pointer;
+            margin-bottom: 0.2rem;
+          }
+
+          .watch__player__actions__right img:hover {
+            animation: in-data 0.3s;
+          }
+
+          @keyframes in-data {
+            0% {
+              transform: scale(0.95);
+            }
+            60% {
+              opacity: 1;
+            }
+            100% {
+              transform: none;
+            }
           }
         `}</style>
       </div>

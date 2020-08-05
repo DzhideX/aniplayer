@@ -60,9 +60,9 @@ const Home: React.FunctionComponent<{
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Banner
-        title={topScore[1].title.romaji}
-        image={topScore[1].bannerImage}
-        description={topScore[1].description}
+        title={topScore[0].title.romaji}
+        image={topScore[0].bannerImage}
+        description={topScore[0].description}
       />
       <h2> Top 20 </h2>
       <PictureCarousel animeData={topScore} number={0} />
