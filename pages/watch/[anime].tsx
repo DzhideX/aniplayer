@@ -5,10 +5,14 @@ const Watch: React.FC = () => {
   const videoRef: any = useRef();
   const progressRef: any = useRef();
   const watchRef: any = useRef();
+  const volumeRef: any = useRef();
   const [videoTimer, setVideoTimer] = useState<number | undefined>(0);
   const [playButton, setPlayButton] = useState<boolean>(true);
   const [mouseMoveOnVideo, setMouseMoveOnVideo] = useState<boolean>(false);
   const [mouseOnPlayer, setMouseOnPlayer] = useState<boolean>(false);
+  const [volumeBarVisible, setVolumeBarVisible] = useState<boolean>(false);
+  const [mouseOnVolumeBar, setMouseOnVolumeBar] = useState<boolean>(false);
+  const [volumeState, setVolumeState] = useState<number | undefined>();
 
   const updateVideoTime = (e) => {
     const progressBarPercentage =
@@ -30,6 +34,40 @@ const Watch: React.FC = () => {
     progressRef.current.value = percentageOfVideoFinished;
   };
 
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) {
+      if (
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement
+      ) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        /* Firefox */
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        /* Chrome, Safari and Opera */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        /* IE/Edge */
+        document.msExitFullscreen();
+      }
+    } else {
+      if (watchRef.current.requestFullscreen) {
+        watchRef.current.requestFullscreen();
+      } else if (watchRef.current.mozRequestFullScreen) {
+        /* Firefox */
+        watchRef.current.mozRequestFullScreen();
+      } else if (watchRef.current.webkitRequestFullscreen) {
+        /* Chrome, Safari & Opera */
+        watchRef.current.webkitRequestFullscreen();
+      } else if (watchRef.current.msRequestFullscreen) {
+        /* IE/Edge */
+        watchRef.current.msRequestFullscreen();
+      }
+    }
+  };
+
   const setMouseMove = (e) => {
     e.preventDefault();
     setMouseMoveOnVideo(true);
@@ -41,12 +79,27 @@ const Watch: React.FC = () => {
     })();
   };
 
+  const setVolume = (e) => {
+    let clickedPercentage =
+      (volumeRef.current.getBoundingClientRect().bottom - e.pageY) /
+      volumeRef.current.offsetHeight;
+    if (clickedPercentage <= 0.02) {
+      clickedPercentage = 0;
+    }
+    videoRef.current.volume = clickedPercentage;
+    setVolumeState(clickedPercentage);
+  };
+
   return (
     <Layout navbar={false}>
       <div
         ref={watchRef}
         className="watch"
-        onMouseMove={(e) => setMouseMove(e)}
+        onMouseMove={(e) => {
+          if (!mouseMoveOnVideo) {
+            setMouseMove(e);
+          }
+        }}
       >
         <video
           ref={videoRef}
@@ -124,44 +177,65 @@ const Watch: React.FC = () => {
                 }}
                 src="/images/watch/skip.png"
               />
+              <div className="watch__player__actions__left__volume">
+                <div
+                  style={{
+                    visibility: mouseOnVolumeBar
+                      ? "visible"
+                      : volumeBarVisible
+                      ? "visible"
+                      : "hidden",
+                  }}
+                  onMouseEnter={() => setMouseOnVolumeBar(true)}
+                  onMouseLeave={() => setMouseOnVolumeBar(false)}
+                  className="watch__player__actions__left__volume__bar"
+                >
+                  <div
+                    onClick={setVolume}
+                    ref={volumeRef}
+                    style={{ width: "0.7rem", height: "5rem" }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        height: `${
+                          volumeState
+                            ? (1 - volumeState) * 100
+                            : videoRef.current
+                            ? (1 - videoRef.current.volume) * 100
+                            : 0
+                        }%`,
+                        backgroundColor: "rgb(30,30,30)",
+                        cursor: "pointer",
+                      }}
+                    ></div>
+                    <div
+                      style={{
+                        width: "100%",
+                        height: `${
+                          volumeState
+                            ? volumeState * 100
+                            : videoRef.current
+                            ? videoRef.current.volume * 100
+                            : 5
+                        }%`,
+                        backgroundColor: "red",
+                        cursor: "pointer",
+                      }}
+                    ></div>
+                  </div>
+                </div>
+                <img
+                  onMouseEnter={() => setVolumeBarVisible(true)}
+                  onMouseLeave={() =>
+                    setTimeout(() => setVolumeBarVisible(false), 1000)
+                  }
+                  src="/images/watch/speaker.png"
+                />
+              </div>
             </div>
             <div className="watch__player__actions__right">
-              <img
-                onClick={() => {
-                  if (document.fullscreenElement) {
-                    if (
-                      document.fullscreenElement ||
-                      document.webkitFullscreenElement ||
-                      document.mozFullScreenElement
-                    ) {
-                      document.exitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                      /* Firefox */
-                      document.mozCancelFullScreen();
-                    } else if (document.webkitExitFullscreen) {
-                      /* Chrome, Safari and Opera */
-                      document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                      /* IE/Edge */
-                      document.msExitFullscreen();
-                    }
-                  } else {
-                    if (watchRef.current.requestFullscreen) {
-                      watchRef.current.requestFullscreen();
-                    } else if (watchRef.current.mozRequestFullScreen) {
-                      /* Firefox */
-                      watchRef.current.mozRequestFullScreen();
-                    } else if (watchRef.current.webkitRequestFullscreen) {
-                      /* Chrome, Safari & Opera */
-                      watchRef.current.webkitRequestFullscreen();
-                    } else if (watchRef.current.msRequestFullscreen) {
-                      /* IE/Edge */
-                      watchRef.current.msRequestFullscreen();
-                    }
-                  }
-                }}
-                src="/images/watch/expand.png"
-              />
+              <img onClick={toggleFullscreen} src="/images/watch/expand.png" />
             </div>
           </div>
         </div>
@@ -187,7 +261,7 @@ const Watch: React.FC = () => {
           }
 
           .watch__player {
-            height: 10%;
+            height: 13%;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -234,6 +308,7 @@ const Watch: React.FC = () => {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding-bottom: 0.5rem;
           }
 
           .watch__player__actions__left {
@@ -244,9 +319,9 @@ const Watch: React.FC = () => {
           }
 
           .watch__player__actions__left > img {
-            height: 2rem;
-            width: 2rem;
-            margin-left: 2rem;
+            height: 2.5rem;
+            width: 2.5rem;
+            margin-left: 3rem;
             cursor: pointer;
             margin-bottom: 0.2rem;
           }
@@ -256,8 +331,8 @@ const Watch: React.FC = () => {
           }
 
           .watch__player__actions__left__play-button {
-            width: 2rem;
-            height: 2rem;
+            width: 3rem;
+            height: 3rem;
             border: none;
             background: none;
             margin-left: -0.35rem;
@@ -273,8 +348,36 @@ const Watch: React.FC = () => {
           }
 
           .watch__player__actions__left__play-button img {
-            height: 1.5rem;
-            width: 1.5rem;
+            height: 2rem;
+            width: 2rem;
+          }
+
+          .watch__player__actions__left__volume {
+            height: 100%;
+            width: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 3rem;
+            display: relative;
+          }
+
+          .watch__player__actions__left__volume img {
+            height: 2.5rem;
+            width: 2.5rem;
+            cursor: pointer;
+          }
+
+          .watch__player__actions__left__volume__bar {
+            position: absolute;
+            min-height: 7rem;
+            min-width: 2rem;
+            background-color: rgb(10, 10, 10);
+            margin-top: -12rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
           }
 
           .watch__player__actions__fullscreen {
@@ -289,8 +392,8 @@ const Watch: React.FC = () => {
           }
 
           .watch__player__actions__right > img {
-            height: 1.7rem;
-            width: 2.1rem;
+            height: 2rem;
+            width: 2.6rem;
             margin-left: 2rem;
             cursor: pointer;
             margin-bottom: 0.2rem;
@@ -316,5 +419,21 @@ const Watch: React.FC = () => {
     </Layout>
   );
 };
+declare global {
+  interface Document {
+    mozCancelFullScreen?: () => Promise<void>;
+    msExitFullscreen?: () => Promise<void>;
+    webkitExitFullscreen?: () => Promise<void>;
+    mozFullScreenElement?: Element;
+    msFullscreenElement?: Element;
+    webkitFullscreenElement?: Element;
+  }
+
+  interface HTMLElement {
+    msRequestFullscreen?: () => Promise<void>;
+    mozRequestFullscreen?: () => Promise<void>;
+    webkitRequestFullscreen?: () => Promise<void>;
+  }
+}
 
 export default Watch;
