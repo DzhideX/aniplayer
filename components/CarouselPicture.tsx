@@ -23,9 +23,9 @@ const CarouselPicture: React.FC<{
   const moveToWatch = async () => {
     const { name } = await getAnimeData();
     if (name) {
-      router.push(`/watch/${name}`);
+      router.push(`/watch/${name}-episode-01`);
     } else {
-      router.push("/watch/boku-no-hero");
+      router.push("/watch/boku-no-hero-episode-01");
     }
   };
 

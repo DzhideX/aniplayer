@@ -1,8 +1,25 @@
 import Layout from "../../components/Layout";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 
-const Watch: React.FC = () => {
+export async function getServerSideProps({ query }) {
+  const { videoUrl } = await fetch(`http://localhost:4000/watch/${query.anime}`)
+    .then((res) => res.json())
+    .catch((err) => console.log(err));
+  return {
+    props: {
+      animeName: query.anime.split("-episode")[0].split("-").join(" "),
+      episodeNumber: query.anime.split("-episode-")[1],
+      videoUrl,
+    },
+  };
+}
+
+const Watch: React.FC<{
+  animeName: string;
+  episodeNumber: string;
+  videoUrl: string;
+}> = ({ animeName, episodeNumber, videoUrl }) => {
   const router = useRouter();
   const videoRef: any = useRef();
   const progressRef: any = useRef();
@@ -106,10 +123,18 @@ const Watch: React.FC = () => {
         <video
           ref={videoRef}
           className="watch__video"
-          src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+          src={
+            videoUrl
+              ? videoUrl
+              : "https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+          }
         >
           <source
-            src="https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+            src={
+              videoUrl
+                ? videoUrl
+                : "https://storage.googleapis.com/linear-theater-254209.appspot.com/v6.4animu.me/Fullmetal-Alchemist/Fullmetal-Alchemist-Episode-01-1080p.mp4"
+            }
             type="video/mp4"
           ></source>
         </video>
@@ -117,6 +142,7 @@ const Watch: React.FC = () => {
           className="watch__back-button"
           src="/images/carousel/left-arrow.png"
           onClick={() => router.push("/")}
+          style={{ visibility: mouseMoveOnVideo ? "visible" : "hidden" }}
         />
         <div
           className="watch__player"
@@ -139,13 +165,6 @@ const Watch: React.FC = () => {
               }
               onClick={updateVideoTime}
             />
-            <p>
-              {`${Math.floor(
-                videoRef.current
-                  ? (videoRef.current.currentTime - videoTimer) / 60
-                  : 0
-              )}:`}
-            </p>
           </div>
           <div className="watch__player__actions">
             <div className="watch__player__actions__left">
@@ -240,6 +259,9 @@ const Watch: React.FC = () => {
                   src="/images/watch/speaker.png"
                 />
               </div>
+              <p className="watch__player__actions__left__anime-name">
+                {animeName}: <span>Episode {Number(episodeNumber)}</span>
+              </p>
             </div>
             <div className="watch__player__actions__right">
               <img onClick={toggleFullscreen} src="/images/watch/expand.png" />
@@ -259,10 +281,10 @@ const Watch: React.FC = () => {
 
           .watch__back-button {
             position: absolute;
-            top: 1rem;
+            top: 1.5rem;
             left: 6rem;
-            width: 1.5rem;
-            height: 1.5rem;
+            width: 2rem;
+            height: 2rem;
             z-index: 2;
             cursor: pointer;
           }
@@ -395,6 +417,18 @@ const Watch: React.FC = () => {
             justify-content: center;
             align-items: center;
             flex-direction: column;
+          }
+
+          .watch__player__actions__left__anime-name {
+            margin-left: 2rem;
+            font-size: 1.2rem;
+            color: white;
+            text-transform: capitalize;
+          }
+
+          .watch__player__actions__left__anime-name span {
+            color: rgb(130, 130, 130);
+            font-weight: 500;
           }
 
           .watch__player__actions__fullscreen {

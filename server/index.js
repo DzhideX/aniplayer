@@ -9,6 +9,20 @@ const app = express();
 
 app.use(cors());
 
+app.get("/watch/:query", async (req, res) => {
+  const animeQuery = req.params.query;
+  const url = `https://4anime.to/${animeQuery}`;
+  try {
+    const response = await got(url);
+    const dom = new JSDOM(response.body);
+    const nodeList = [dom.window.document.querySelectorAll(`source`)];
+    const videoUrl = nodeList[0][0].attributes.getNamedItem("src").value;
+    res.status(200).json({ videoUrl });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 app.get("/anime/:name", async (req, res) => {
   const anilistName = req.params.name
     .split(" ")
@@ -40,7 +54,7 @@ app.get("/anime/:name", async (req, res) => {
     });
     res.json({ name: fourAnimeName.split(" ").join("-") });
   } catch (error) {
-    console.log(error);
+    res.status(400).send();
   }
 });
 
