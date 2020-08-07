@@ -10,13 +10,11 @@ const app = express();
 app.use(cors());
 
 app.get("/anime/:name", async (req, res) => {
-  console.log(req.params.name);
   const anilistName = req.params.name
     .split(" ")
     .map((item) => item.toLowerCase())
     .join(" ");
   let fourAnimeName = "";
-  console.log("ani", anilistName);
   const url =
     "https://4anime.to/?s=" +
     req.params.name
@@ -29,7 +27,6 @@ app.get("/anime/:name", async (req, res) => {
     const nodeList = [...dom.window.document.querySelectorAll("#headerDIV_95")];
     nodeList.forEach((div) => {
       const showUrl = div.children[0].attributes[0].value;
-      console.log(showUrl);
       const nameOfTheShow = showUrl.split("https://4anime.to/anime/")[1];
       if (
         checkStringSimilarity(
@@ -41,7 +38,7 @@ app.get("/anime/:name", async (req, res) => {
       }
       return;
     });
-    res.json({ name: fourAnimeName });
+    res.json({ name: fourAnimeName.split(" ").join("-") });
   } catch (error) {
     console.log(error);
   }

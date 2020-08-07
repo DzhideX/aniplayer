@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import shortenText from "../lib/shortenText";
-import { useQuery } from "react-query";
+import { useRouter } from "next/router";
 
 const CarouselPicture: React.FC<{
   backgroundImage: string;
@@ -12,20 +12,22 @@ const CarouselPicture: React.FC<{
   const [animeData, setAnimeData] = useState<
     string | undefined | null | string[]
   >();
+  const router = useRouter();
 
   const getAnimeData = async () => {
-    const newData = await fetch(`http://localhost:4000/anime/${englishTitle}`)
+    return await fetch(`http://localhost:4000/anime/${englishTitle}`)
       .then((res) => res.json())
       .catch((err) => console.log(err));
-    console.log(newData);
-    // setAnimeData(newData);
   };
 
-  useEffect(() => {
-    if (pictureLoadedOnce) {
-      getAnimeData();
+  const moveToWatch = async () => {
+    const { name } = await getAnimeData();
+    if (name) {
+      router.push(`/watch/${name}`);
+    } else {
+      router.push("/watch/boku-no-hero");
     }
-  }, [pictureLoadedOnce]);
+  };
 
   return (
     <div
@@ -40,6 +42,7 @@ const CarouselPicture: React.FC<{
         setPictureLoadedOnce(true);
       }}
       onMouseLeave={() => setMoreInfoView(false)}
+      onClick={() => moveToWatch()}
     >
       {animeData && console.log(animeData)}
       {moreInfoView && (

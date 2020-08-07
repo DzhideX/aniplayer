@@ -1,7 +1,9 @@
 import Layout from "../../components/Layout";
 import { useRef, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const Watch: React.FC = () => {
+  const router = useRouter();
   const videoRef: any = useRef();
   const progressRef: any = useRef();
   const watchRef: any = useRef();
@@ -111,6 +113,11 @@ const Watch: React.FC = () => {
             type="video/mp4"
           ></source>
         </video>
+        <img
+          className="watch__back-button"
+          src="/images/carousel/left-arrow.png"
+          onClick={() => router.push("/")}
+        />
         <div
           className="watch__player"
           style={{
@@ -248,6 +255,16 @@ const Watch: React.FC = () => {
             align-items: center;
             justify-content: flex-end;
             position: relative;
+          }
+
+          .watch__back-button {
+            position: absolute;
+            top: 1rem;
+            left: 6rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            z-index: 2;
+            cursor: pointer;
           }
 
           .watch__video {
