@@ -25,7 +25,7 @@ const CarouselPicture: React.FC<{
     if (name) {
       router.push(`/watch/${name}-episode-01`);
     } else {
-      router.push("/watch/boku-no-hero-episode-01");
+      router.push("/watch/fullmetal-alchemist-brotherhood-episode-01");
     }
   };
 

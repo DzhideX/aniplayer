@@ -1,16 +1,19 @@
 import Layout from "../../components/Layout";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export async function getServerSideProps({ query }) {
-  const { videoUrl } = await fetch(`http://localhost:4000/watch/${query.anime}`)
+  const watchData = await fetch(`http://localhost:4000/watch/${query.anime}`)
     .then((res) => res.json())
     .catch((err) => console.log(err));
   return {
     props: {
       animeName: query.anime.split("-episode")[0].split("-").join(" "),
       episodeNumber: query.anime.split("-episode-")[1],
-      videoUrl,
+      query: query.anime,
+      videoUrl: watchData ? watchData.videoUrl : null,
+      hasNextEpisode: watchData.hasNextEpisode,
     },
   };
 }
@@ -19,19 +22,30 @@ const Watch: React.FC<{
   animeName: string;
   episodeNumber: string;
   videoUrl: string;
-}> = ({ animeName, episodeNumber, videoUrl }) => {
+  query: string;
+  hasNextEpisode: boolean;
+}> = ({ animeName, episodeNumber, videoUrl, query, hasNextEpisode }) => {
   const router = useRouter();
   const videoRef: any = useRef();
   const progressRef: any = useRef();
   const watchRef: any = useRef();
   const volumeRef: any = useRef();
   const [videoTimer, setVideoTimer] = useState<number | undefined>(0);
+  const [videoDuration, setVideoDuration] = useState<number | undefined>();
   const [playButton, setPlayButton] = useState<boolean>(true);
+  const [metaDataLoaded, setMetaDataLoaded] = useState<boolean>(false);
   const [mouseMoveOnVideo, setMouseMoveOnVideo] = useState<boolean>(false);
   const [mouseOnPlayer, setMouseOnPlayer] = useState<boolean>(false);
   const [volumeBarVisible, setVolumeBarVisible] = useState<boolean>(false);
   const [mouseOnVolumeBar, setMouseOnVolumeBar] = useState<boolean>(false);
   const [volumeState, setVolumeState] = useState<number | undefined>();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVideoTimer(videoRef.current.currentTime);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const updateVideoTime = (e) => {
     const progressBarPercentage =
@@ -39,8 +53,9 @@ const Watch: React.FC<{
         (progressRef.current.offsetLeft * progressRef.current.max) /
           progressRef.current.offsetWidth) /
       (0.9 * window.innerWidth);
+    console.log(progressBarPercentage - 0.0526, videoDuration);
     videoRef.current.currentTime =
-      (progressBarPercentage - 0.0526) * videoRef.current.duration;
+      (progressBarPercentage - 0.0526) * videoDuration;
     if (videoRef.current.currentTime <= 5) {
       videoRef.current.currentTime = 0;
     }
@@ -48,8 +63,7 @@ const Watch: React.FC<{
   };
 
   const updateProgressBar = (e) => {
-    const percentageOfVideoFinished =
-      videoRef.current.currentTime / videoRef.current.duration;
+    const percentageOfVideoFinished = videoTimer / videoDuration;
     progressRef.current.value = percentageOfVideoFinished;
   };
 
@@ -111,6 +125,12 @@ const Watch: React.FC<{
 
   return (
     <Layout navbar={false}>
+      <Head>
+        <title>
+          {animeName.charAt(0).toUpperCase() + animeName.slice(1)}: Episode{" "}
+          {Number(episodeNumber)}
+        </title>
+      </Head>
       <div
         ref={watchRef}
         className="watch"
@@ -121,6 +141,10 @@ const Watch: React.FC<{
         }}
       >
         <video
+          onLoadedMetadata={() => {
+            setVideoDuration(videoRef.current.duration);
+            setMetaDataLoaded(true);
+          }}
           ref={videoRef}
           className="watch__video"
           src={
@@ -144,6 +168,11 @@ const Watch: React.FC<{
           onClick={() => router.push("/")}
           style={{ visibility: mouseMoveOnVideo ? "visible" : "hidden" }}
         />
+        {!metaDataLoaded && (
+          <p className="watch__loading">
+            Loading..(refresh if this takes too long)
+          </p>
+        )}
         <div
           className="watch__player"
           style={{
@@ -152,6 +181,7 @@ const Watch: React.FC<{
               : mouseMoveOnVideo
               ? "visible"
               : "hidden",
+            display: metaDataLoaded ? "flex" : "none",
           }}
           onMouseEnter={() => setMouseOnPlayer(true)}
           onMouseLeave={() => setMouseOnPlayer(false)}
@@ -160,9 +190,7 @@ const Watch: React.FC<{
             <progress
               ref={progressRef}
               className="watch__player__progress__bar"
-              value={
-                videoRef.current ? videoTimer / videoRef.current.duration : 0
-              }
+              value={videoDuration ? videoTimer / videoDuration : 0}
               onClick={updateVideoTime}
             />
           </div>
@@ -265,6 +293,27 @@ const Watch: React.FC<{
             </div>
             <div className="watch__player__actions__right">
               <img onClick={toggleFullscreen} src="/images/watch/expand.png" />
+              {hasNextEpisode && videoTimer >= videoDuration - 20 && (
+                <div
+                  onClick={() => {
+                    const episodeNumber =
+                      Number(query.substring(query.length - 2)) + 1;
+                    router.push(
+                      `/watch/${
+                        query.slice(0, query.length - 2) +
+                        (episodeNumber < 10
+                          ? `0${episodeNumber}`
+                          : `${episodeNumber}`)
+                      }`
+                    );
+                  }}
+                  className="watch__player__actions__right__next-episode"
+                >
+                  <img src="/images/watch/play-button-black.png" />
+                  <p> Next Episode </p>
+                  {console.log(hasNextEpisode)}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -297,6 +346,13 @@ const Watch: React.FC<{
 
           video::-webkit-media-controls-enclosure {
             display: none !important;
+          }
+          .watch__loading {
+            position: absolute;
+            top: 50%;
+            left: 40%;
+            z-index: 2;
+            color: white;
           }
 
           .watch__player {
@@ -427,7 +483,7 @@ const Watch: React.FC<{
           }
 
           .watch__player__actions__left__anime-name span {
-            color: rgb(130, 130, 130);
+            color: rgb(180, 180, 180);
             font-weight: 500;
           }
 
@@ -452,6 +508,29 @@ const Watch: React.FC<{
 
           .watch__player__actions__right img:hover {
             animation: in-data 0.3s;
+          }
+
+          .watch__player__actions__right__next-episode {
+            position: absolute;
+            width: 10rem;
+            height: 3rem;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            bottom: 7.5rem;
+            right: 6rem;
+          }
+
+          .watch__player__actions__right__next-episode:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+          }
+
+          .watch__player__actions__right__next-episode img {
+            height: 1.5rem;
+            margin-right: 0.5rem;
           }
 
           @keyframes in-data {

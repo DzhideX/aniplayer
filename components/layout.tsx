@@ -20,6 +20,10 @@ const Layout: React.FunctionComponent<{
           name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1"
         />
+        <link
+          rel="shortcut icon"
+          href="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico"
+        ></link>
       </Head>
       {navbar && <Navbar />}
       <main className="main-flex-container">{children}</main>

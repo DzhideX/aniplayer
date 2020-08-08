@@ -56,7 +56,7 @@ const Home: React.FunctionComponent<{
   return (
     <Layout navbar={true}>
       <Head>
-        <title>Create Next App</title>
+        <title>Aniflix: Browse</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Banner
