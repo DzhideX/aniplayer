@@ -13,7 +13,7 @@ export async function getServerSideProps({ query }) {
       episodeNumber: query.anime.split("-episode-")[1],
       query: query.anime,
       videoUrl: watchData ? watchData.videoUrl : null,
-      hasNextEpisode: watchData.hasNextEpisode,
+      numberOfEpisodes: watchData.numberOfEpisodes,
     },
   };
 }
@@ -23,8 +23,8 @@ const Watch: React.FC<{
   episodeNumber: string;
   videoUrl: string;
   query: string;
-  hasNextEpisode: boolean;
-}> = ({ animeName, episodeNumber, videoUrl, query, hasNextEpisode }) => {
+  numberOfEpisodes: number | string;
+}> = ({ animeName, episodeNumber, videoUrl, query, numberOfEpisodes }) => {
   const router = useRouter();
   const videoRef: any = useRef();
   const progressRef: any = useRef();
@@ -293,27 +293,27 @@ const Watch: React.FC<{
             </div>
             <div className="watch__player__actions__right">
               <img onClick={toggleFullscreen} src="/images/watch/expand.png" />
-              {hasNextEpisode && videoTimer >= videoDuration - 20 && (
-                <div
-                  onClick={() => {
-                    const episodeNumber =
-                      Number(query.substring(query.length - 2)) + 1;
-                    router.push(
-                      `/watch/${
-                        query.slice(0, query.length - 2) +
-                        (episodeNumber < 10
-                          ? `0${episodeNumber}`
-                          : `${episodeNumber}`)
-                      }`
-                    );
-                  }}
-                  className="watch__player__actions__right__next-episode"
-                >
-                  <img src="/images/watch/play-button-black.png" />
-                  <p> Next Episode </p>
-                  {console.log(hasNextEpisode)}
-                </div>
-              )}
+              {Number(episodeNumber) < numberOfEpisodes &&
+                videoTimer >= videoDuration - 20 && (
+                  <div
+                    onClick={() => {
+                      const episodeNumber =
+                        Number(query.substring(query.length - 2)) + 1;
+                      router.push(
+                        `/watch/${
+                          query.slice(0, query.length - 2) +
+                          (episodeNumber < 10
+                            ? `0${episodeNumber}`
+                            : `${episodeNumber}`)
+                        }`
+                      );
+                    }}
+                    className="watch__player__actions__right__next-episode"
+                  >
+                    <img src="/images/watch/play-button-black.png" />
+                    <p> Next Episode </p>
+                  </div>
+                )}
             </div>
           </div>
         </div>

@@ -57,7 +57,6 @@ const Home: React.FunctionComponent<{
     <Layout navbar={true}>
       <Head>
         <title>Aniflix: Browse</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <Banner
         title={topScore[0].title.romaji}

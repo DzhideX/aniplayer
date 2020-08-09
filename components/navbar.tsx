@@ -1,8 +1,28 @@
+import { useState } from "react";
+import { useRouter } from "next/router";
+
 const Navbar: React.FC = () => {
+  const router = useRouter();
+  const [searchInput, setSearchInput] = useState(false);
+  const [searchInputValue, setSearchInputValue] = useState("");
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      router.push({
+        pathname: "/search",
+        query: {
+          name: searchInputValue,
+        },
+      });
+    }
+  };
+
   return (
     <div className="navbar">
       <div className="navbar__left">
-        <h2 className="navbar__left__logo">ANIFLIX</h2>
+        <h2 onClick={() => router.push("/")} className="navbar__left__logo">
+          ANIFLIX
+        </h2>
         <h4>Home</h4>
         <h4>TV Shows</h4>
         <h4>Movies</h4>
@@ -10,10 +30,30 @@ const Navbar: React.FC = () => {
         <h4>My List</h4>
       </div>
       <div className="navbar__right">
-        <img
-          className="navbar__right__search"
-          src="/images/navbar/search.png"
-        />
+        {searchInput ? (
+          <div className={"navbar__right__search-input"}>
+            <img
+              className="navbar__right__search"
+              src="/images/navbar/search.png"
+            />
+            <input
+              className="navbar__right__search-input"
+              type="text"
+              placeholder="Search for anime.."
+              autoFocus
+              onBlur={() => setSearchInput(false)}
+              onKeyDown={handleSearch}
+              onChange={(e) => setSearchInputValue(e.target.value)}
+              value={searchInputValue}
+            />
+          </div>
+        ) : (
+          <img
+            className="navbar__right__search"
+            src="/images/navbar/search.png"
+            onClick={() => setSearchInput(true)}
+          />
+        )}
         <h4>KIDS</h4>
         <img className="navbar__right__gift" src="/images/navbar/gift.png" />
         <img className="navbar__right__bell" src="/images/navbar/bell.png" />
@@ -39,7 +79,7 @@ const Navbar: React.FC = () => {
           background-color: rgba(0, 0, 0, 1);
           position: fixed;
           top: 0;
-          z-index: 1;
+          z-index: 10;
         }
 
         .navbar h4 {
@@ -66,6 +106,7 @@ const Navbar: React.FC = () => {
           color: rgb(217, 9, 19);
           padding-top: 0.3rem;
           font-size: 2rem;
+          cursor: pointer;
         }
 
         .navbar__right {
@@ -76,6 +117,49 @@ const Navbar: React.FC = () => {
         .navbar__right__search {
           height: 1.3rem;
           cursor: pointer;
+        }
+
+        .navbar__right__search-input {
+          display: flex;
+          align-items: center;
+        }
+
+        .navbar__right__search-input input {
+          border: 0.02rem solid white;
+          background-color: rgb(0, 0, 0, 0.5);
+          padding: 0.3rem 0.3rem 0.3rem 2rem;
+          color: white;
+          height: 2.3rem;
+          width: 20rem;
+          animation: right_to_left 0.6s;
+        }
+
+        @keyframes right_to_left {
+          from {
+            width: 0;
+          }
+          to {
+            width: 20rem;
+          }
+        }
+
+        @keyframes left_to_right {
+          from {
+            width: 20rem;
+          }
+          to {
+            width: 0;
+          }
+        }
+
+        .navbar__right__search-input img {
+          margin-right: -1.7rem;
+          margin-bottom: 0.13rem;
+          z-index: 1;
+        }
+
+        .navbar__right__search-input input:focus {
+          outline: none;
         }
 
         .navbar__right__gift {

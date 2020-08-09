@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import shortenText from "../lib/shortenText";
 import { useRouter } from "next/router";
 
@@ -7,12 +7,10 @@ const CarouselPicture: React.FC<{
   title: string;
   englishTitle: string;
 }> = ({ backgroundImage, title, englishTitle }) => {
-  const [moreInfoView, setMoreInfoView] = useState<boolean>(false);
-  const [pictureLoadedOnce, setPictureLoadedOnce] = useState<boolean>(false);
-  const [animeData, setAnimeData] = useState<
-    string | undefined | null | string[]
-  >();
   const router = useRouter();
+  const [moreInfoView, setMoreInfoView] = useState<boolean>(false);
+  let shouldAnimate = false;
+  const [pictureLoadedOnce, setPictureLoadedOnce] = useState<boolean>(false);
 
   const getAnimeData = async () => {
     return await fetch(`http://localhost:4000/anime/${englishTitle}`)
@@ -38,13 +36,21 @@ const CarouselPicture: React.FC<{
         backgroundImage: `url(${backgroundImage})`,
       }}
       onMouseEnter={() => {
-        setMoreInfoView(true);
-        setPictureLoadedOnce(true);
+        shouldAnimate = true;
+        setTimeout(() => {
+          if (shouldAnimate) {
+            setMoreInfoView(true);
+            setPictureLoadedOnce(true);
+          }
+        }, 1000);
       }}
-      onMouseLeave={() => setMoreInfoView(false)}
+      onMouseLeave={() => {
+        console.log("should animate false");
+        shouldAnimate = false;
+        setMoreInfoView(false);
+      }}
       onClick={() => moveToWatch()}
     >
-      {animeData && console.log(animeData)}
       {moreInfoView && (
         <>
           <div className="carousel-picture__left">
@@ -56,7 +62,15 @@ const CarouselPicture: React.FC<{
             </div>
           </div>
           <div className="carousel-picture__right">
-            <div className="carouse-picture__right__sign"></div>
+            <div className="carousel-picture__right__sign">
+              <img src="/images/carousel/like.png" />
+            </div>
+            <div className="carousel-picture__right__sign">
+              <img src="/images/carousel/dislike.png" />
+            </div>
+            <div className="carousel-picture__right__sign">
+              <span>+</span>
+            </div>
           </div>
         </>
       )}
@@ -76,7 +90,6 @@ const CarouselPicture: React.FC<{
 
         .inactive {
           animation: out-data 0.5s;
-          z-index: 1;
         }
 
         .active {
@@ -135,7 +148,7 @@ const CarouselPicture: React.FC<{
           padding-bottom: 1.3rem;
         }
 
-        .carouse-picture__right__sign {
+        .carousel-picture__right__sign {
           background-color: rgba(0, 0, 0, 0.7);
           color: white;
           width: 2rem;
@@ -143,9 +156,36 @@ const CarouselPicture: React.FC<{
           display: flex;
           justify-content: center;
           align-item: center;
-          padding-top: 0.1rem;
           border-radius: 2.5rem;
           border: 0.1rem solid rgba(255, 255, 255, 0.7);
+          margin-bottom: 0.5rem;
+        }
+
+        .carousel-picture__right__sign:hover {
+          animation: in-data 0.3s;
+          width: 2.1rem;
+          height: 2.1rem;
+          background-color: rgba(0, 0, 0, 1);
+          border: 0.1rem solid rgba(255, 255, 255, 1);
+        }
+
+        .carousel-picture__right__sign span {
+          font-size: 1.5rem;
+          margin: 0;
+          font-weight: 400;
+          margin-top: -0.285rem;
+        }
+
+        .carousel-picture__right__sign img {
+          width: 1rem;
+          height: 1rem;
+          margin-top: 0.35rem;
+        }
+
+        .carousel-picture__right__sign:nth-of-type(2) img {
+          width: 1rem;
+          height: 1rem;
+          margin-top: 0.5rem;
         }
 
         @keyframes in-data {
