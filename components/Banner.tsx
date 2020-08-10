@@ -30,7 +30,7 @@ const Banner: React.FC<{
       <style jsx>{`
         .banner {
           width: 100%;
-          height: 45rem;
+          height: 55rem;
           background-repeat: no-repeat;
           background-position: 50% 45%;
           background-size: cover;
@@ -41,7 +41,7 @@ const Banner: React.FC<{
         }
 
         .banner__data {
-          height: 40%;
+          height: 28%;
           width: 100%;
           padding-left: 4rem;
         }
